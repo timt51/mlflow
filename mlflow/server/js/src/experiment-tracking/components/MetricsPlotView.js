@@ -65,9 +65,8 @@ export class MetricsPlotView extends React.Component {
     return legend;
   };
 
-  static parseTimestamp = (timestamp, history, xAxis) => {
+  static parseTimestamp = (timestamp, minTimestamp, xAxis) => {
     if (xAxis === X_AXIS_RELATIVE) {
-      const minTimestamp = _.minBy(history, 'timestamp').timestamp;
       return (timestamp - minTimestamp) / 1000;
     }
     return Utils.formatTimestamp(timestamp);
@@ -90,13 +89,14 @@ export class MetricsPlotView extends React.Component {
       const visible = !deselectedCurvesSet.has(Utils.getCurveKey(runUuid, metricKey))
         ? true
         : 'legendonly';
+      const minTimestamp = _.minBy(history, 'timestamp').timestamp;
       return {
         name: MetricsPlotView.getLineLegend(metricKey, runDisplayName, isComparing),
-        x: history.map((entry) => {
+        x: `.map((entry) => {
           if (xAxis === X_AXIS_STEP) {
             return entry.step;
           }
-          return MetricsPlotView.parseTimestamp(entry.timestamp, history, xAxis);
+          return MetricsPlotView.parseTimestamp(entry.timestamp, minTimestamp, xAxis);
         }),
         y: isSingleHistory ? historyValues : EMA(historyValues, lineSmoothness),
         text: historyValues.map((value) => (isNaN(value) ? value : value.toFixed(5))),
