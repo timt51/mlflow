@@ -92,7 +92,7 @@ export class MetricsPlotView extends React.Component {
       const minTimestamp = _.minBy(history, 'timestamp').timestamp;
       return {
         name: MetricsPlotView.getLineLegend(metricKey, runDisplayName, isComparing),
-        x: `.map((entry) => {
+        x: history.map((entry) => {
           if (xAxis === X_AXIS_STEP) {
             return entry.step;
           }
